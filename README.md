@@ -1,6 +1,6 @@
-# Scrapper
+# Scrapper (Sneha-162/Scrapper)
 
-This repository contains a small web-scraping project centered around a Jupyter notebook and example files for learning and experimentation.
+This repository (https://github.com/Sneha-162/Scrapper) is a small web-scraping project hosted on GitHub under the user `Sneha-162` and the repository name `Scrapper`.
 
 Files in this repository
 
@@ -11,6 +11,10 @@ Files in this repository
 - requirements.txt — Pinned dependencies for reproducible installs.
 - pyvenv.cfg and Scripts/ — These come from a Python virtual environment. They are not needed in the repository and are covered by .gitignore.
 
+Repository link
+
+- GitHub: https://github.com/Sneha-162/Scrapper
+
 What you can do with this repo
 
 - Reproduce the notebook locally: install Jupyter, open web_scraper.ipynb, and run the cells. The notebook contains code and inline explanations to demonstrate how pages are fetched and parsed.
@@ -19,18 +23,23 @@ What you can do with this repo
 
 Quick start (recommended)
 
-1. Create a virtual environment and install pinned dependencies:
+1. Clone the repository and create a virtual environment:
 
+   git clone https://github.com/Sneha-162/Scrapper.git
+   cd Scrapper
    python -m venv .venv
    source .venv/bin/activate  # macOS / Linux
    .venv\Scripts\activate    # Windows
+
+2. Install pinned dependencies:
+
    pip install -r requirements.txt
 
-2. Run the sample scraper on the included local HTML (no network required):
+3. Run the sample scraper on the included local HTML (no network required):
 
    python scraper.py --input webpage.html --output topics.csv --format csv
 
-3. Or run the scraper against the live GitHub Topics page:
+4. Or run the scraper against the live GitHub Topics page:
 
    python scraper.py --input https://github.com/topics --output topics.csv --format csv
 
@@ -69,3 +78,7 @@ Development suggestions
 - Remove the embedded virtualenv files from history if you want to shrink the repository size (I added .gitignore so future commits won't re-add them).
 - Consider adding a LICENSE if you want to make the project explicitly open-source.
 - If you want the notebook converted to a more feature-rich script (concurrency, headless browsing for JS-heavy pages), I can help with that next.
+
+Contact / Issues
+
+If you find bugs or want enhancements, open an issue in the repository: https://github.com/Sneha-162/Scrapper/issues
