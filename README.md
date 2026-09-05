@@ -7,39 +7,65 @@ Files in this repository
 - web_scraper.ipynb — A Jupyter notebook that implements the scraper (data fetching, parsing, and export). Open this in Jupyter or VS Code and run the cells to reproduce the scraping steps.
 - webpage.html — A sample HTML page included for local testing of the notebook's parsing logic.
 - topics.csv — Example CSV data used by the notebook or produced by scraping; inspect it to see the expected output schema.
-- pyvenv.cfg and Scripts/ — These come from a Python virtual environment. They are not needed in the repository and can be removed or added to .gitignore if you prefer to keep the repo clean.
+- scraper.py — A small, runnable script converted from the notebook that extracts topic titles, descriptions, and links and writes CSV/JSON.
+- requirements.txt — Pinned dependencies for reproducible installs.
+- pyvenv.cfg and Scripts/ — These come from a Python virtual environment. They are not needed in the repository and are covered by .gitignore.
 
 What you can do with this repo
 
 - Reproduce the notebook locally: install Jupyter, open web_scraper.ipynb, and run the cells. The notebook contains code and inline explanations to demonstrate how pages are fetched and parsed.
-- Test parsing locally using webpage.html — the notebook has code paths that load a local HTML file instead of requesting a remote site, which is useful for offline testing and development.
-- Inspect or extend topics.csv to see the scraped fields and their ordering.
+- Run the script directly: `scraper.py` is a small CLI wrapper around the same parsing logic used in the notebook and works with either a live URL or the included `webpage.html` for offline testing.
+- Inspect or extend `topics.csv` to see the scraped fields and their ordering.
 
 Quick start (recommended)
 
-1. Install dependencies (Jupyter and common scraping libraries). There is no requirements.txt yet; here are the typical packages used by the notebook — run the command below to install them:
+1. Create a virtual environment and install pinned dependencies:
 
-   python -m pip install jupyter requests beautifulsoup4 pandas
+   python -m venv .venv
+   source .venv/bin/activate  # macOS / Linux
+   .venv\Scripts\activate    # Windows
+   pip install -r requirements.txt
 
-2. Start Jupyter and open the notebook:
+2. Run the sample scraper on the included local HTML (no network required):
 
-   jupyter notebook web_scraper.ipynb
+   python scraper.py --input webpage.html --output topics.csv --format csv
 
-   or open the notebook directly in VS Code.
+3. Or run the scraper against the live GitHub Topics page:
 
-3. Run the notebook cells from top to bottom. Look for a cell near the top that either fetches remote pages or loads `webpage.html` for local testing.
+   python scraper.py --input https://github.com/topics --output topics.csv --format csv
 
-Notes and recommendations
+CLI usage (scraper.py)
 
-- Add a requirements.txt: If you want reproducible installs, run `pip freeze > requirements.txt` from a virtual environment with the notebook's dependencies and commit it.
-- Remove virtualenv files: The `Scripts/` folder and `pyvenv.cfg` appear to be an embedded virtual environment. It's better to remove them from the repo and add them to `.gitignore` to reduce repository size.
-- Add usage instructions: If you prefer a script-based workflow, consider converting the notebook to a script (e.g., `scraper.py`) and adding CLI flags for input/output paths and rate-limiting.
-- Add a LICENSE: If you plan to make this public, add an explicit license (MIT, Apache-2.0, etc.).
+A small command-line wrapper is provided in `scraper.py` (converted from the notebook).
 
-If you'd like, I can:
+Options
 
-- Automatically generate a requirements.txt by inspecting the notebook for imports.
-- Convert the notebook into a runnable Python script and add a small CLI wrapper.
-- Remove the virtual environment files from the repository and add a .gitignore entry.
+- -i, --input: URL or local HTML file (default: https://github.com/topics)
+- -o, --output: Output path (default: topics.csv)
+- -f, --format: Output format: csv or json (default: csv)
+- --save-html: Save fetched page to webpage.html (useful when debugging)
+- --rate: Rate limit delay (seconds) between requests
+- --user-agent: Custom User-Agent header
 
-Tell me which of the above you'd like me to do next and I'll proceed.
+Examples
+
+  # Fetch live GitHub Topics and write CSV
+  python scraper.py --input https://github.com/topics --output topics.csv --format csv
+
+  # Parse the included sample HTML and write JSON
+  python scraper.py --input webpage.html --output topics.json --format json
+
+  # Save the fetched HTML to webpage.html for debugging
+  python scraper.py --input https://github.com/topics --save-html
+
+Notes
+
+- The script uses requests + BeautifulSoup and contains a simple retry/backoff strategy for robustness. If the page structure changes, update the selectors in `scraper.py` (there are clear constants at the top of the file).
+- For reproducible installs, use the pinned `requirements.txt` in the repo.
+- The repository includes a simple pytest-based test and a GitHub Actions workflow that runs the tests against the included `webpage.html` (no external network calls during CI).
+
+Development suggestions
+
+- Remove the embedded virtualenv files from history if you want to shrink the repository size (I added .gitignore so future commits won't re-add them).
+- Consider adding a LICENSE if you want to make the project explicitly open-source.
+- If you want the notebook converted to a more feature-rich script (concurrency, headless browsing for JS-heavy pages), I can help with that next.
